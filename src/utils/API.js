@@ -13,6 +13,7 @@ export default {
         return axios.get("http://localhost:3001/api/recipes/byDish/" + { query });
     },
 
+//-----------------------------------------------------------------------------------------------------------------------//    
     // Deletes the user with the given id
     deleteUser: function (id) {
         return axios.delete("http://localhost:3001/api/users/" + id);
@@ -22,6 +23,8 @@ export default {
         return axios.post("http://localhost:3001/api/users", userData);
     },
 
+
+//-----------------------------------------------------------------------------------------------------------------------//    
     wakeUp: function () {
         return axios.get(API_URL + "/wake-up");
     }, 

@@ -60,7 +60,6 @@ class Search extends Component {
                     <ul className="list-group">
                         {this.state.recipes.map((image, i) => (
                             <div className="Image" 
-                                className="list-group-item" 
                                 key={i}
                                 isActive={this.state.selectedImage === image}
                                 onClick={() => this.setState({ selectedImage: image })}
