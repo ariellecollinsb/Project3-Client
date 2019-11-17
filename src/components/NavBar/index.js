@@ -3,8 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 
 const NavBar = () => (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <Link class="navbar-brand" href="#">
-            <img src="../images/InstaPrep-placeholder-logo.PNG" width="30" height="30" class="d-inline-block align-top" alt=""/>
+        <Link className="navbar-brand" to="../images/InstaPrep-placeholder-logo.PNG">
                 InstaPrep
        </Link>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +32,11 @@ const NavBar = () => (
                     <li className="nav-link">
                         <NavLink className="nav-link" activeClassName="active"
                             to="/profile">Profile</NavLink>
+                    </li>
+
+                    <li className="nav-link">
+                        <NavLink className="nav-link" activeClassName="active"
+                            to="/blog">Blog</NavLink>
                     </li>
                 </ul>
             </div>

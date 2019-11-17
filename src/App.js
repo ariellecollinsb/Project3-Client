@@ -54,37 +54,9 @@ export default class App extends Component {
             )}
           </div>
         </div>
-        <Footer>
-
-        </Footer>
+        <Footer/>
       </>
     );
   }
 
 };
-
-
-
-//   render() {
-//     const buttons = (providers, socket) => 
-//       providers.map(provider => 
-//         <OAuth 
-//           provider={provider}
-//           key={provider}
-//           socket={socket}
-//         />
-//       )
-
-//     return (
-//       <div className='wrapper'>
-//         <div className='container'>
-//           {this.state.loading
-//             ? <Loading />
-//             : buttons(providers, socket)
-//           }
-//         </div>
-//         <Footer />
-//       </div>
-//     )
-//   }
-// }

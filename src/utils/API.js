@@ -10,7 +10,7 @@ export default {
     },
 
     getRecipes: function (query) {
-        return axios.get("http://localhost:3001/api/recipes", { params: { q: query } });
+        return axios.get("http://localhost:3001/api/recipes/byDish/" + { query });
     },
 
     // Deletes the user with the given id
@@ -24,15 +24,9 @@ export default {
 
     wakeUp: function () {
         return axios.get(API_URL + "/wake-up");
+    }, 
+
+    getBlogs: function (req, res) {
+        return axios.get("http://localhost:3001/api/blog")
     }
 };
-
-
-
-
-
-
-    // getRandomRecipe: function() {
-    //    return axios.get("http://localhost:3001/api/recipes/random/onion", {
-    //    });
-    // }

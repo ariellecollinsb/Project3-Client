@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 /* Import Components */
 import CheckBox from "../FormComponents/CheckBox";
@@ -16,7 +17,7 @@ class FormContainer extends Component {
         name: "",
         age: "",
         gender: "",
-        skills: [],
+        interests: [],
         about: ""
       },
 
@@ -34,8 +35,8 @@ class FormContainer extends Component {
 
   /* This lifecycle hook gets executed when the component mounts */
 
-  handleFullName(e) {
-    let value = e.target.value;
+  handleFullName(event) {
+    let value = event.target.value;
     this.setState(
       prevState => ({
         newUser: {
@@ -47,8 +48,8 @@ class FormContainer extends Component {
     );
   }
 
-  handleAge(e) {
-    let value = e.target.value;
+  handleAge(event) {
+    let value = event.target.value;
     this.setState(
       prevState => ({
         newUser: {
@@ -123,8 +124,8 @@ class FormContainer extends Component {
     });
   }
 
-  handleClearForm(e) {
-    e.preventDefault();
+  handleClearForm(event) {
+    event.preventDefault();
     this.setState({
       newUser: {
         name: "",
@@ -169,8 +170,8 @@ class FormContainer extends Component {
         <CheckBox
           title={"Interests"}
           name={"Interests"}
-          options={this.state.skillOptions}
-          selectedOptions={this.state.newUser.skills}
+          options={this.state.interestOptions}
+          selectedOptions={this.state.newUser.interests}
           handleChange={this.handleCheckBox}
         />{" "}
         {/* Interests */}
