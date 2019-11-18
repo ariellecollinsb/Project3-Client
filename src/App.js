@@ -1,61 +1,101 @@
 import React, { Component } from "react";
-// import { render } from "react-dom";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import io from 'socket.io-client';
-import OAuth from './components/OAuth';
-import { API_URL } from './config';
-import NavBar from "./components/NavBar";
-import Footer from "./components/Footer";
-import Search from "./pages/Search";
-import Discover from "./pages/Discover";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import API from "./utils/API";
+import { API_URL } from './config';
+import io from 'socket.io-client';
+
+//Pages
+import HomePage from "views/Home.js";
+import ProfilePage from "views/Profile.js";
+import DiscoverPage from "views/Discover.js";
+import AttributionsPage from "views/Attributions.js";
+import LoginPage from "views/Login.js";
+import RegisterPage from "views/Register.js";
+import MealsPage from "views/Meals.js";
+import LogoutPage from "views/Logout.js";
+
+//Components
+import { UserProvider } from './UserContext';
 
 const socket = io(API_URL);
-const providers = ['google', 'github'];
 
 export default class App extends Component {
+  setUser = (user) => {
+    this.setState(state => ({
+      user: user
+    }));
+  }
+
+  isAuthenticated = () => {
+    return this.state.user && Object.entries(this.state.user).length !== 0;
+  }
+
   state = {
-    loading: true
+    loading: true,
+    user: {},
+    isAuthenticated: this.isAuthenticated,
+    setUser: this.setUser,
+    socket: socket
   }
 
   componentDidMount = () => {
-    API.wakeUp()
+    API.getSession()
       .then(res => {
-        if (res.ok) {
-          this.setState({ loading: false })
+        if (res.data.passport) {
+          this.setState({
+            user: res.data.passport.user
+          })
         }
       })
   }
 
   render() {
+
     return (
-      <>
-        <Router>
-          <NavBar />
-          <div className="container">
-            <Switch>
-              <Route exact path="/discover" component={Discover} />
-              <Route exact path="/search" component={Search} />
-              <Route exact path="/profile" component={Profile} />
-              <Route component={Home} />
-            </Switch>
-          </div>
-        </Router>
+      <UserProvider value={this.state}>
+        <BrowserRouter>
+          <Switch>
+            <Route
+              path="/index"
+              render={props => <HomePage {...props} />}
+            />
+            <Route
+              path="/profile"
+              render={props => <ProfilePage {...props} />}
+            />
+            <Route
+              path="/discover"
+              render={props => <DiscoverPage {...props} />}
+            />
+            <Route
+              path="/login"
+              render={props => <LoginPage {...props} />}
+            />
+            <Route
+              path="/register"
+              render={props => <RegisterPage {...props} />}
+            />
+            <Route
+              path="/logout"
+              render={props => <LogoutPage {...props} />}
+            />
+            <Route
+              path="/meals"
+              render={props => <MealsPage {...props} />}
+            />
+            <Route
+              path="/attributions"
+              render={props => <AttributionsPage {...props} />}
+            />
+            <Redirect to="/index" />
+          </Switch>
+        </BrowserRouter>
         <div className={"wrapper"}>
           <div className={"container"}>
-            {providers.map(provider =>
-              <OAuth
-                provider={provider}
-                key={provider}
-                socket={socket}
-              />
-            )}
+
           </div>
         </div>
-        <Footer/>
-      </>
+      </UserProvider>
     );
   }
 

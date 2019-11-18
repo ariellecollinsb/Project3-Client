@@ -2,10 +2,15 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import FontAwesome from 'react-fontawesome'
 import { API_URL } from '../../config'
+import UserContext from '../../UserContext'
+import { Redirect } from "react-router-dom";
+
+import { Button } from "reactstrap";
 
 
 export default class OAuth extends Component {
-  
+  static contextType = UserContext;
+
   state = {
     user: {},
     disabled: ""
@@ -14,9 +19,9 @@ export default class OAuth extends Component {
   componentDidMount() {
     const { socket, provider } = this.props
 
-    socket.on(provider, user => {  
+    socket.on(provider, user => {
+      this.context.setUser(user);
       this.popup.close()
-      this.setState({user})
     })
   }
 
@@ -25,19 +30,19 @@ export default class OAuth extends Component {
       const { popup } = this
       if (!popup || popup.closed || popup.closed === undefined) {
         clearInterval(check)
-        this.setState({ disabled: ""})
       }
     }, 1000)
   }
 
   openPopup() {
+    if (this.state.disabled) { return; }
     const { provider, socket } = this.props
     const width = 600, height = 600
     const left = (window.innerWidth / 2) - (width / 2)
     const top = (window.innerHeight / 2) - (height / 2)
     const url = `${API_URL}/${provider}?socketId=${socket.id}`
 
-    return window.open(url, '',       
+    return window.open(url, '',
       `toolbar=no, location=no, directories=no, status=no, menubar=no, 
       scrollbars=no, resizable=no, copyhistory=no, width=${width}, 
       height=${height}, top=${top}, left=${left}`
@@ -46,46 +51,49 @@ export default class OAuth extends Component {
 
   startAuth = () => {
     if (!this.state.disabled) {
-      this.popup = this.openPopup()  
+      this.popup = this.openPopup()
       this.checkPopup()
-      this.setState({disabled: 'disabled'})
     }
   }
 
   closeCard = () => {
-    this.setState({user: {}})
+    this.setState({ user: {} })
+  }
+
+  renderRedirect = () => {
+    if (this.context.isAuthenticated()) {
+      if (!this.context.user.registered) {
+        return <Redirect to='/register' />
+      } else {
+        return <Redirect to='/profile' />
+      }
+
+    }
   }
 
   render() {
-    const { name, photo} = this.state.user
+    const { name } = this.state.user
     const { provider } = this.props
-    const { disabled } = this.state
-    const atSymbol = provider === "google" ? "@" : ""
-    
     return (
-      <div>
+      <>
+        {this.renderRedirect()}
         {name
-          ? <div className='card'> 
-              <img src={photo} alt={name} />
-              <FontAwesome
-                name='times-circle'
-                className='close'
-                onClick={this.closeCard}
-              />
-              <h4>{`${atSymbol}${name}`}</h4>
-            </div>
-          : <div className='button-wrapper fadein-fast'>
-              <button 
-                onClick={this.startAuth} 
-                className={`${provider} ${disabled} button`}
-              >
-                <FontAwesome
-                  name={provider}
-                />
-              </button>
-            </div>
+          ? <div>
+            Logged in as {name}
+          </div>
+          :
+          <Button
+            className="btn-neutral btn-just-icon mr-1"
+            color={provider}
+            onClick={this.startAuth}
+            href="#"
+          >
+            <FontAwesome
+              name={provider}
+            />
+          </Button>
         }
-      </div>
+      </>
     )
   }
 }
